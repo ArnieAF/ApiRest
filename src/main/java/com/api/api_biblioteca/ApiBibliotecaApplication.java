@@ -1,6 +1,5 @@
 package com.api.api_biblioteca;
 
-import jdk.swing.interop.SwingInterOpUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -10,5 +9,5 @@ public class ApiBibliotecaApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ApiBibliotecaApplication.class, args);
 	}
-	
+
 }
