@@ -18,8 +18,7 @@ public class Libro {
     @JoinColumn(name = "idAutor",nullable = false)
     private Autor autor;
 
-    @ManyToOne
-    @JoinColumn(name = "idGenero",nullable = false)
+    @Enumerated(EnumType.STRING)
     private Genero genero;
 
     private LocalDateTime fechaPublicacion;
