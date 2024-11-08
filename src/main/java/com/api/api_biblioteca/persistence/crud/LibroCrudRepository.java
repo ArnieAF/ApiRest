@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public interface LibroRepository extends JpaRepository<Libro,Integer>{
+public interface LibroCrudRepository extends JpaRepository<Libro,Integer>{
 
     List<Libro>findByTituloContaining(String titulo); //Buscar libro parcialmente
     List<Libro>findByTitulo(String titulo);//Buscar libro exacto

@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-public interface UsuarioRepository extends JpaRepository<Usuario,Integer> {
+public interface UsuarioCrudRepository extends JpaRepository<Usuario,Integer> {
 
     Optional<Usuario>findByEmail(String email); //Buscar por email
     List<Usuario>findByNombreContaining(String nombre); //Busca nombre cuyo nombre tenga l secuencia de caracteres especificada(paremetro)(parcial)

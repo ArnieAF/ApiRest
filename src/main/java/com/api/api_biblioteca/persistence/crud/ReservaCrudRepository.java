@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-public interface ReservaRepository extends JpaRepository<Reserva,Integer> {
+public interface ReservaCrudRepository extends JpaRepository<Reserva,Integer> {
 
     List<Reserva>findByUsuario_IdUsuario(int usuarioId); // Buscar reservas por usuario
     List<Reserva>findByLibro_IdLibro(int libroId); //Buscar reservas de un libro
