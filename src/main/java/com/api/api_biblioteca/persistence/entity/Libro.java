@@ -45,6 +45,7 @@ public class Libro {
         return autor;
     }
 
+
     public void setAutor(Autor autor) {
         this.autor = autor;
     }
