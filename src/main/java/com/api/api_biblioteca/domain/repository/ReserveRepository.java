@@ -1,5 +1,10 @@
 package com.api.api_biblioteca.domain.repository;
 
+import com.api.api_biblioteca.domain.service.Reservation;
+import java.util.List;
+import java.util.Optional;
+import java.time.LocalDateTime;
+
 public interface ReserveRepository {
 
     List<Reservation> findByUserId(int userId);

@@ -1,5 +1,11 @@
 package com.api.api_biblioteca.domain.repository;
 
+import com.api.api_biblioteca.domain.service.Book;
+
+import java.util.List;
+import java.util.Optional;
+import java.time.LocalDateTime;
+
 public interface BookRepository {
 
     List<Book> findByTitleContaining(String title);

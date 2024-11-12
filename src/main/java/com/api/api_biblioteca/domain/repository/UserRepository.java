@@ -1,5 +1,10 @@
 package com.api.api_biblioteca.domain.repository;
 
+import com.api.api_biblioteca.domain.service.User;
+import java.util.List;
+import java.util.Optional;
+import java.time.LocalDateTime;
+
 public interface UserRepository {
 
     Optional<User> findByEmail(String email);
