@@ -21,7 +21,11 @@ public interface AuthorMapper {
 
     })
     Author toAuthor(Autor autor);
+<<<<<<< HEAD
     List<Author>toAuthors(List<Autor>autors);
+=======
+    List<Author>toAuthors(List<Autor> autores);
+>>>>>>> 9e2c584 (sexo anal)
 
     @InheritInverseConfiguration
     Autor toAutor(Author author);
