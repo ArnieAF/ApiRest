@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 public interface AuthorRepository {
 
+    List<Author>getAll();
     List<Author> findByNameContaining(String name);
     Optional<Author> findByName(String name);
     List<Author> findByNationality(String nationality);
