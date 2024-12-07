@@ -6,11 +6,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface LibroCrudRepository extends JpaRepository<Libro,Integer>{
 
     List<Libro>findByTituloContaining(String titulo); //Buscar libro parcialmente
-    List<Libro>findByTitulo(String titulo);//Buscar libro exacto
+    Optional<Libro> findByTitulo(String titulo);//Buscar libro exacto
     List<Libro>findByAutor_IdAutor(int autorId); //Buscar libros por id del autor
     List<Libro> findByGenero(Genero genero); // Buscar libros por el genero
     List<Libro>findByDisponibleTrue(); //Buscar libros disponibles

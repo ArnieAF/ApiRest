@@ -1,11 +1,15 @@
 package com.api.api_biblioteca.persistence.mapper;
 
+import com.api.api_biblioteca.domain.service.Author;
 import com.api.api_biblioteca.domain.service.Book;
+import com.api.api_biblioteca.persistence.entity.Autor;
 import com.api.api_biblioteca.persistence.entity.Libro;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
+
+import java.util.List;
 
 @Mapper(componentModel = "spring",uses = {AuthorMapper.class})
 public interface BookMapper {
@@ -19,6 +23,8 @@ public interface BookMapper {
             @Mapping(source = "disponible",target = "available")
     })
     Book toBook(Libro libro);
+    List<Book>toBooks(List<Libro>toLibros);
+
 
     @InheritInverseConfiguration
     Libro toLibro(Book book);
