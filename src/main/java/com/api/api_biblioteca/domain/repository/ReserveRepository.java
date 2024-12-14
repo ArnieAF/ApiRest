@@ -1,6 +1,6 @@
 package com.api.api_biblioteca.domain.repository;
 
-import com.api.api_biblioteca.domain.service.Reservation;
+import com.api.api_biblioteca.domain.Reservation;
 import java.util.List;
 import java.util.Optional;
 import java.time.LocalDateTime;

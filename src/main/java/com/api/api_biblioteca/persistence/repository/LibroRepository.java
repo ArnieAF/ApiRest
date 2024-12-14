@@ -1,11 +1,8 @@
 package com.api.api_biblioteca.persistence.repository;
 
 import com.api.api_biblioteca.domain.repository.BookRepository;
-import com.api.api_biblioteca.domain.service.Author;
-import com.api.api_biblioteca.domain.service.Book;
-import com.api.api_biblioteca.domain.service.Genre;
+import com.api.api_biblioteca.domain.Book;
 import com.api.api_biblioteca.persistence.crud.LibroCrudRepository;
-import com.api.api_biblioteca.persistence.entity.Autor;
 import com.api.api_biblioteca.persistence.entity.Genero;
 import com.api.api_biblioteca.persistence.entity.Libro;
 import com.api.api_biblioteca.persistence.mapper.BookMapper;

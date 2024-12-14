@@ -1,6 +1,6 @@
 package com.api.api_biblioteca.domain.repository;
 
-import com.api.api_biblioteca.domain.service.Author;
+import com.api.api_biblioteca.domain.Author;
 import java.util.List;
 import java.util.Optional;
 public interface AuthorRepository {

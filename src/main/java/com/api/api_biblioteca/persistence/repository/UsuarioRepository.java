@@ -1,7 +1,10 @@
 package com.api.api_biblioteca.persistence.repository;
 
+import com.api.api_biblioteca.domain.repository.UserRepository;
+import com.api.api_biblioteca.domain.User;
 import com.api.api_biblioteca.persistence.crud.UsuarioCrudRepository;
 import com.api.api_biblioteca.persistence.entity.Usuario;
+import com.api.api_biblioteca.persistence.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -10,45 +13,58 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class UsuarioRepository {
+public class UsuarioRepository implements UserRepository {
 
     @Autowired
     private UsuarioCrudRepository usuarioCrudRepository;
 
-    public Optional<Usuario> getByEmail(String email){
-        return usuarioCrudRepository.findByEmail(email);
+    @Autowired
+    private UserMapper mapper;
+
+
+    @Override
+    public Optional<User> findByEmail(String email) {
+        Optional<Usuario> usuario = usuarioCrudRepository.findByEmail(email);
+        return usuario.map(usuario1 -> mapper.toUser(usuario1));
     }
 
-    public List<Usuario> getByNombreContaining(String nombre){
-        return usuarioCrudRepository.findByNombreContaining(nombre);
+    @Override
+    public List<User> findByNameContaining(String name) {
+        List<Usuario>usuarios = usuarioCrudRepository.findByNombreContaining(name);
+        return mapper.toUsers(usuarios);
     }
 
-    public List<Usuario> getByNombre(String nombre){
-        return usuarioCrudRepository.findByNombre(nombre);
+    @Override
+    public Optional<User> findById(int userId) {
+        Optional<Usuario> usuario = usuarioCrudRepository.findByIdUsuario(userId);
+        return usuario.map(usuario1 -> mapper.toUser(usuario1));
     }
 
-    public Optional<Usuario>getByIdUsuario(int idUsuario){
-        return usuarioCrudRepository.findByIdUsuario(idUsuario);
-    }
-
-    public List<Usuario>getByFechaRegistroBetween(LocalDateTime fecha1, LocalDateTime fecha2){
-        return usuarioCrudRepository.findByFechaRegistroBetween(fecha1,fecha2);
-    }
-
-    public List<Usuario>getByFechaRegistroAfter(LocalDateTime fecha){
-        return usuarioCrudRepository.findByFechaRegistroAfter(fecha);
-    }
-
-    public  List<Usuario>getByFechaRegistroBefore(LocalDateTime fecha){
-        return usuarioCrudRepository.findByFechaRegistroBefore(fecha);
+    @Override
+    public List<User> findByRegistrationDateBetween(LocalDateTime start, LocalDateTime end) {
+        List<Usuario>usuarios = usuarioCrudRepository.findByFechaRegistroBetween(start,end);
+        return mapper.toUsers(usuarios);
     }
 
     public boolean existsByEmail(String email){
         return usuarioCrudRepository.existsByEmail(email);
     }
 
-    public long countByFechaRegistroBetween(LocalDateTime fecha1, LocalDateTime fecha2){
-        return usuarioCrudRepository.countByFechaRegistroBetween(fecha1,fecha2);
+    @Override
+    public long countByRegistrationDateBetween(LocalDateTime start, LocalDateTime end) {
+        return usuarioCrudRepository.countByFechaRegistroBetween(start,end);
     }
+
+    @Override
+    public User save(User user) {
+        Usuario usuario = mapper.toUsuario(user);
+        return mapper.toUser(usuarioCrudRepository.save(usuario));
+    }
+
+    @Override
+    public void delete(int userId) {
+       usuarioCrudRepository.deleteById(userId);
+    }
+
 
 }

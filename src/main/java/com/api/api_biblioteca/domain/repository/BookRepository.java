@@ -1,6 +1,6 @@
 package com.api.api_biblioteca.domain.repository;
 
-import com.api.api_biblioteca.domain.service.Book;
+import com.api.api_biblioteca.domain.Book;
 
 import java.util.List;
 import java.util.Optional;

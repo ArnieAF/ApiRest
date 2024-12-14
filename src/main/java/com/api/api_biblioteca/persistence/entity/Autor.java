@@ -8,10 +8,13 @@ public class Autor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "idAutor",nullable = false)
     private Integer idAutor;
 
+    @Column(name = "nombre") // Verifica también este nombre
     private String nombre;
 
+    @Column(name = "nacionalidad") // Verifica también este nombre
     private String nacionalidad;
 
     public Integer getIdAutor() {

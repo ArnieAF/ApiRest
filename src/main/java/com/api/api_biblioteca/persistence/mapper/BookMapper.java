@@ -1,8 +1,6 @@
 package com.api.api_biblioteca.persistence.mapper;
 
-import com.api.api_biblioteca.domain.service.Author;
-import com.api.api_biblioteca.domain.service.Book;
-import com.api.api_biblioteca.persistence.entity.Autor;
+import com.api.api_biblioteca.domain.Book;
 import com.api.api_biblioteca.persistence.entity.Libro;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;

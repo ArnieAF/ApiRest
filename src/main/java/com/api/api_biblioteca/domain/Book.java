@@ -1,4 +1,4 @@
-package com.api.api_biblioteca.domain.service;
+package com.api.api_biblioteca.domain;
 
 import java.time.LocalDateTime;
 
