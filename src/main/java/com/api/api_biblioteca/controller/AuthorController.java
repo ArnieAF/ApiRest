@@ -3,10 +3,9 @@ package com.api.api_biblioteca.controller;
 import com.api.api_biblioteca.domain.Author;
 import com.api.api_biblioteca.domain.service.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,43 +18,57 @@ public class AuthorController {
     private AuthorService authorService;
 
 
-
     @GetMapping("/all")
-    public List<Author> getAll() {
-        return authorService.getAll();
+    public ResponseEntity<List<Author>> getAll() {
+        return new ResponseEntity<>(authorService.getAll(), HttpStatus.OK);
     }
 
-    @GetMapping("/{nameC}")
-    public List<Author>findByNameContaining(@PathVariable("nameC") String name){
-        return authorService.findByNameContaining(name);
+    @GetMapping("/contains/{name}")
+    public ResponseEntity<List<Author>>findByNameContaining(@PathVariable("name") String name){
+            return new ResponseEntity<>(authorService.findByNameContaining(name),HttpStatus.OK);
     }
 
-    public Optional<Author> findByName(String name){
-        return authorService.findByName(name);
+    @GetMapping("/exact/{name}")
+    public ResponseEntity<Author> findByName(@PathVariable("name") String name){
+        return authorService.findByName(name)
+                .map(author -> new ResponseEntity<>(author,HttpStatus.OK))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    public List<Author> findByNationality(String nationality){
-        return authorService.findByNationality(nationality);
+    @GetMapping("/{nationality}")
+    public ResponseEntity<List<Author>> findByNationality(@PathVariable("nationality") String nationality){
+        return new ResponseEntity<>(authorService.findByNationality(nationality),HttpStatus.OK);
     }
 
-    public List<Author> findAllByOrderByNameAsc(){
-        return authorService.findAllByOrderByNameAsc();
+    @GetMapping("/allNameAsc")
+    public ResponseEntity<List<Author>> findAllByOrderByNameAsc(){
+        return new ResponseEntity<>(authorService.findAllByOrderByNameAsc(),HttpStatus.OK);
     }
 
-    public List<Author> findAllByOrderByNameDesc(){
-        return authorService.findAllByOrderByNameDesc();
+    @GetMapping("/allNameDesc")
+    public ResponseEntity<List<Author>> findAllByOrderByNameDesc(){
+        return new ResponseEntity<>(authorService.findAllByOrderByNameDesc(),HttpStatus.OK);
     }
 
-    public long countByNationality(String nationality){
-        return authorService.countByNationality(nationality);
+    @GetMapping("/count/{nationality}")
+    public ResponseEntity<Long> countByNationality(@PathVariable("nationality") String nationality) {
+        long count = authorService.countByNationality(nationality);
+        return new ResponseEntity<>(count, HttpStatus.OK);
     }
 
-    public Author save(Author author){
-        return authorService.save(author);
+
+    @PostMapping("/save")
+    public ResponseEntity<Author> save(@RequestBody Author author){
+        return new ResponseEntity<>(authorService.save(author),HttpStatus.CREATED);
     }
 
-    public boolean delete(String name){
-        return authorService.delete(name);
+    @DeleteMapping("/delete/{name}")
+    public ResponseEntity delete(@PathVariable("name") String name){
+        if(authorService.delete(name)){
+            return new ResponseEntity(HttpStatus.OK);
+        }else {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
     }
 
 }

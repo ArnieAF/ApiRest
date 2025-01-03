@@ -10,12 +10,14 @@ public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_usuario")
     private Integer idUsuario;
 
     private String nombre;
 
     private String email;
 
+    @Column(name = "fecha_registro")
     private LocalDateTime fechaRegistro;
 
     public Integer getIdUsuario() {

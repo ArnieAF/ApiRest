@@ -10,17 +10,19 @@ public class Libro {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_libro",nullable = false)
     private Integer idLibro;
 
     private String titulo;
 
     @ManyToOne
-    @JoinColumn(name = "idAutor",nullable = false)
+    @JoinColumn(name = "id_autor",nullable = false)
     private Autor autor;
 
     @Enumerated(EnumType.STRING)
     private Genero genero;
 
+    @Column(name = "fecha_publicacion",nullable = false)
     private LocalDateTime fechaPublicacion;
 
     private boolean disponible;

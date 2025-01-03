@@ -10,18 +10,21 @@ public class Reserva {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_reserva")
     private Integer idReserva;
 
     @ManyToOne
-    @JoinColumn(name = "idUsuario",nullable = false)
+    @JoinColumn(name = "id_usuario",nullable = false)
     private Usuario usuario;
 
     @ManyToOne
-    @JoinColumn(name = "idLibro",nullable = false)
+    @JoinColumn(name = "id_libro",nullable = false)
     private Libro libro;
 
+    @Column(name = "fecha_reserva")
     private LocalDateTime fechaReserva;
 
+    @Column(name = "fecha_expiracion")
     private LocalDateTime fechaExpiracion;
 
     public Integer getIdReserva() {
