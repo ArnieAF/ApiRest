@@ -11,6 +11,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.api.api_biblioteca.exception.ResourceNotFoundException;
+import com.api.api_biblioteca.exception.UnauthorizedAccessException;
+import com.api.api_biblioteca.exception.GlobalExceptionHandler;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,7 +31,11 @@ public class BookController {
     public ResponseEntity<List<Book>> findByTitleContaining(
             @Parameter(description = "Partial title to search for", required = true, example = "Harry")
             @PathVariable("title") String title) {
-        return new ResponseEntity<>(bookService.findByTitleContaining(title), HttpStatus.OK);
+        List<Book> books = bookService.findByTitleContaining(title);
+        if (books.isEmpty()) {
+            throw new ResourceNotFoundException("No se encontraron libros con el título " + title);
+        }
+        return new ResponseEntity<>(books, HttpStatus.OK);
     }
 
     @GetMapping("/exact/{title}")
@@ -42,7 +49,7 @@ public class BookController {
             @PathVariable("title") String title) {
         return bookService.findByTitle(title)
                 .map(book -> new ResponseEntity<>(book, HttpStatus.OK))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontró el libro con el título " + title));
     }
 
     @GetMapping("/author/{authorId}")
@@ -51,7 +58,11 @@ public class BookController {
     public ResponseEntity<List<Book>> findByAuthorId(
             @Parameter(description = "The ID of the author", required = true, example = "1")
             @PathVariable("authorId") int authorId) {
-        return new ResponseEntity<>(bookService.findByAuthorId(authorId), HttpStatus.OK);
+        List<Book> books = bookService.findByAuthorId(authorId);
+        if (books.isEmpty()) {
+            throw new ResourceNotFoundException("No se encontraron libros para el autor con ID " + authorId);
+        }
+        return new ResponseEntity<>(books, HttpStatus.OK);
     }
 
     @GetMapping("/genre/{genre}")
@@ -60,14 +71,19 @@ public class BookController {
     public ResponseEntity<List<Book>> findByGenre(
             @Parameter(description = "The genre of the books", required = true, example = "Fantasy")
             @PathVariable("genre") String genre) {
-        return new ResponseEntity<>(bookService.findByGenre(genre), HttpStatus.OK);
+        List<Book> books = bookService.findByGenre(genre);
+        if (books.isEmpty()) {
+            throw new ResourceNotFoundException("No se encontraron libros del género " + genre);
+        }
+        return new ResponseEntity<>(books, HttpStatus.OK);
     }
 
     @GetMapping("/available")
     @Operation(summary = "Find books that are available")
     @ApiResponse(responseCode = "200", description = "List of books that are currently available")
     public ResponseEntity<List<Book>> findByAvailableTrue() {
-        return new ResponseEntity<>(bookService.findByAvailableTrue(), HttpStatus.OK);
+        List<Book> books = bookService.findByAvailableTrue();
+        return new ResponseEntity<>(books, HttpStatus.OK);
     }
 
     @GetMapping("/published/after/{date}")
@@ -76,7 +92,8 @@ public class BookController {
     public ResponseEntity<List<Book>> findByPublicationDateAfter(
             @Parameter(description = "The date after which books were published", required = true, example = "2020-01-01T00:00:00")
             @PathVariable("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime date) {
-        return new ResponseEntity<>(bookService.findByPublicationDateAfter(date), HttpStatus.OK);
+        List<Book> books = bookService.findByPublicationDateAfter(date);
+        return new ResponseEntity<>(books, HttpStatus.OK);
     }
 
     @GetMapping("/published/before/{date}")
@@ -85,16 +102,16 @@ public class BookController {
     public ResponseEntity<List<Book>> findByPublicationDateBefore(
             @Parameter(description = "The date before which books were published", required = true, example = "2000-12-31T23:59:59")
             @PathVariable("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime date) {
-        return new ResponseEntity<>(bookService.findByPublicationDateBefore(date), HttpStatus.OK);
+        List<Book> books = bookService.findByPublicationDateBefore(date);
+        return new ResponseEntity<>(books, HttpStatus.OK);
     }
 
     @PostMapping("/save")
     @Operation(summary = "Save a new book")
     @ApiResponse(responseCode = "201", description = "Book successfully created")
-    public ResponseEntity<Book> save(
-            @Parameter(description = "The book object to save")
-            @RequestBody Book book) {
-        return new ResponseEntity<>(bookService.save(book), HttpStatus.CREATED);
+    public ResponseEntity<Book> save(@RequestBody Book book) {
+        Book savedBook = bookService.save(book);
+        return new ResponseEntity<>(savedBook, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/delete/{title}")
@@ -103,14 +120,13 @@ public class BookController {
             @ApiResponse(responseCode = "200", description = "Book successfully deleted"),
             @ApiResponse(responseCode = "404", description = "Book not found")
     })
-    public ResponseEntity<Void> delete(
-            @Parameter(description = "The title of the book to delete", required = true, example = "Harry Potter and the Chamber of Secrets")
-            @PathVariable("title") String title) {
+    public ResponseEntity<Void> delete(@PathVariable("title") String title) {
         if (bookService.delete(title)) {
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new ResourceNotFoundException("No se encontró el libro con el título " + title);
         }
     }
 }
+
 

@@ -21,6 +21,14 @@ public class Autor {
         return idAutor;
     }
 
+    public Autor() {
+    }
+    public Autor(Integer idAutor, String nombre, String nacionalidad) {
+        this.idAutor = idAutor;
+        this.nombre = nombre;
+        this.nacionalidad = nacionalidad;
+    }
+
     public void setIdAutor(Integer idAutor) {
         this.idAutor = idAutor;
     }

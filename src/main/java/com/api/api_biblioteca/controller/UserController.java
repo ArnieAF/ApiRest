@@ -11,9 +11,13 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.api.api_biblioteca.exception.ResourceNotFoundException;
+import com.api.api_biblioteca.exception.UnauthorizedAccessException;
+import com.api.api_biblioteca.exception.GlobalExceptionHandler;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
 
 @RestController
 @RequestMapping("/users")
@@ -33,7 +37,7 @@ public class UserController {
             @PathVariable("email") String email) {
         return userService.findByEmail(email)
                 .map(user -> new ResponseEntity<>(user, HttpStatus.OK))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario con correo " + email + " no encontrado."));
     }
 
     @GetMapping("/contains/{name}")
@@ -42,7 +46,11 @@ public class UserController {
     public ResponseEntity<List<User>> findByNameContaining(
             @Parameter(description = "The substring to search for in user names", required = true, example = "John")
             @PathVariable("name") String name) {
-        return new ResponseEntity<>(userService.findByNameContaining(name), HttpStatus.OK);
+        List<User> users = userService.findByNameContaining(name);
+        if (users.isEmpty()) {
+            throw new ResourceNotFoundException("No se encontraron usuarios con el nombre " + name);
+        }
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
     @GetMapping("/{userId}")
@@ -56,7 +64,7 @@ public class UserController {
             @PathVariable("userId") int userId) {
         return userService.findById(userId)
                 .map(user -> new ResponseEntity<>(user, HttpStatus.OK))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario con ID " + userId + " no encontrado."));
     }
 
     @GetMapping("/registered-between")
@@ -67,7 +75,11 @@ public class UserController {
             @RequestParam("start") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
             @Parameter(description = "The end date for the range", required = true, example = "2023-12-31T23:59:59")
             @RequestParam("end") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end) {
-        return new ResponseEntity<>(userService.findByRegistrationDateBetween(start, end), HttpStatus.OK);
+        List<User> users = userService.findByRegistrationDateBetween(start, end);
+        if (users.isEmpty()) {
+            throw new ResourceNotFoundException("No se encontraron usuarios registrados entre las fechas " + start + " y " + end);
+        }
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
     @GetMapping("/exists/{email}")
@@ -115,7 +127,7 @@ public class UserController {
         if (userService.delete(userId)) {
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new ResourceNotFoundException("Usuario con ID " + userId + " no encontrado.");
         }
     }
 }

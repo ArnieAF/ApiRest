@@ -11,6 +11,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.api.api_biblioteca.exception.ResourceNotFoundException;
+import com.api.api_biblioteca.exception.UnauthorizedAccessException;
+import com.api.api_biblioteca.exception.GlobalExceptionHandler;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,7 +31,11 @@ public class ReserveController {
     public ResponseEntity<List<Reservation>> findByUserId(
             @Parameter(description = "The ID of the user", required = true, example = "1")
             @PathVariable("userId") int userId) {
-        return new ResponseEntity<>(reserveService.findByUserId(userId), HttpStatus.OK);
+        List<Reservation> reservations = reserveService.findByUserId(userId);
+        if (reservations.isEmpty()) {
+            throw new ResourceNotFoundException("No se encontraron reservas para el usuario con ID " + userId);
+        }
+        return new ResponseEntity<>(reservations, HttpStatus.OK);
     }
 
     @GetMapping("/book/{bookId}")
@@ -37,7 +44,11 @@ public class ReserveController {
     public ResponseEntity<List<Reservation>> findByBookId(
             @Parameter(description = "The ID of the book", required = true, example = "101")
             @PathVariable("bookId") int bookId) {
-        return new ResponseEntity<>(reserveService.findByBookId(bookId), HttpStatus.OK);
+        List<Reservation> reservations = reserveService.findByBookId(bookId);
+        if (reservations.isEmpty()) {
+            throw new ResourceNotFoundException("No se encontraron reservas para el libro con ID " + bookId);
+        }
+        return new ResponseEntity<>(reservations, HttpStatus.OK);
     }
 
     @GetMapping("/user/{userId}/book/{bookId}")
@@ -53,7 +64,7 @@ public class ReserveController {
             @PathVariable("bookId") int bookId) {
         return reserveService.findByUserIdAndBookId(userId, bookId)
                 .map(reservation -> new ResponseEntity<>(reservation, HttpStatus.OK))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontró la reserva para el usuario con ID " + userId + " y libro con ID " + bookId));
     }
 
     @GetMapping("/after/{date}")
@@ -62,7 +73,11 @@ public class ReserveController {
     public ResponseEntity<List<Reservation>> findByReservationDateAfter(
             @Parameter(description = "The date after which reservations are retrieved", required = true, example = "2023-01-01T00:00:00")
             @PathVariable("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime date) {
-        return new ResponseEntity<>(reserveService.findByReservationDateAfter(date), HttpStatus.OK);
+        List<Reservation> reservations = reserveService.findByReservationDateAfter(date);
+        if (reservations.isEmpty()) {
+            throw new ResourceNotFoundException("No se encontraron reservas después de la fecha " + date);
+        }
+        return new ResponseEntity<>(reservations, HttpStatus.OK);
     }
 
     @GetMapping("/before/{date}")
@@ -71,7 +86,11 @@ public class ReserveController {
     public ResponseEntity<List<Reservation>> findByExpirationDateBefore(
             @Parameter(description = "The date before which reservations are retrieved", required = true, example = "2023-12-31T23:59:59")
             @PathVariable("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime date) {
-        return new ResponseEntity<>(reserveService.findByExpirationDateBefore(date), HttpStatus.OK);
+        List<Reservation> reservations = reserveService.findByExpirationDateBefore(date);
+        if (reservations.isEmpty()) {
+            throw new ResourceNotFoundException("No se encontraron reservas que expiren antes de la fecha " + date);
+        }
+        return new ResponseEntity<>(reservations, HttpStatus.OK);
     }
 
     @GetMapping("/count/after/{date}")
@@ -81,6 +100,9 @@ public class ReserveController {
             @Parameter(description = "The date after which reservations are counted", required = true, example = "2023-01-01T00:00:00")
             @PathVariable("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime date) {
         long count = reserveService.countByExpirationDateAfter(date);
+        if (count == 0) {
+            throw new ResourceNotFoundException("No se encontraron reservas que expiren después de la fecha " + date);
+        }
         return new ResponseEntity<>(count, HttpStatus.OK);
     }
 
@@ -93,6 +115,9 @@ public class ReserveController {
             @Parameter(description = "The date to check against expiration", required = true, example = "2023-12-31T23:59:59")
             @PathVariable("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime date) {
         boolean exists = reserveService.existsByIdAndExpirationDateBefore(reservationId, date);
+        if (!exists) {
+            throw new ResourceNotFoundException("No se encontró la reserva con ID " + reservationId + " que expire antes de la fecha " + date);
+        }
         return new ResponseEntity<>(exists, HttpStatus.OK);
     }
 
@@ -119,8 +144,7 @@ public class ReserveController {
         if (reserveService.delete(userId, bookId)) {
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new ResourceNotFoundException("No se encontró la reserva para el usuario con ID " + userId + " y libro con ID " + bookId);
         }
     }
 }
-
