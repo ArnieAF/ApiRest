@@ -25,6 +25,25 @@ Esta API proporciona una plataforma para gestionar la información relacionada c
 1. Clona este repositorio:
    ```bash
    git clone https://github.com/ArnieAF/ApiRest.git
+   
+2. Navega al directorio del proyecto
+   ```bash
+   cd ApiRest
+   
+3. Si usas Maven, ejecuta el siguiente comando para instalar las dependencias:
+   ```bash
+   mvn install
+   
+4. Configura tu base de datos en el archivo src/main/resources/application.properties. Asegúrate de que los valores de las propiedades como spring.datasource.url, spring.datasource.username, y spring.datasource.password estén correctamente configurados. Ejemplo:
+   
+
+5. Ejecuta las migraciones para crear las tablas necesarias en la base de datos (si usas Hibernate, se realiza automáticamente).
+
+
+6. Lanza la aplicación con el siguiente comando:
+   ```bash
+   mvn spring-boot:run
+
 
 ## Uso de la API
 Endpoints principales:
